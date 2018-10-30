@@ -239,7 +239,7 @@
 
     
         <meta property="article:published_time" content="Tue Oct 30 2018 14:26:00 GMT+0800">
-        <meta property="article:modified_time" content="Tue Oct 30 2018 14:50:57 GMT+0800">
+        <meta property="article:modified_time" content="Tue Oct 30 2018 15:35:16 GMT+0800">
     
 
     <!-- The Twitter Card protocol -->
@@ -262,7 +262,7 @@
     "mainEntityOfPage": "http://nyan.ink/2018/10/30/diary-30-10-2018/index.html",
     "headline": "工作室面试学妹的时候想的一些东东",
     "datePublished": "Tue Oct 30 2018 14:26:00 GMT+0800",
-    "dateModified": "Tue Oct 30 2018 14:50:57 GMT+0800",
+    "dateModified": "Tue Oct 30 2018 15:35:16 GMT+0800",
     "author": {
         "@type": "Person",
         "name": "Gooey Nyan",
@@ -632,22 +632,36 @@ Let me say something: JJuusstt  ffoorr  FFuunn!!
 <p>实现这个效果的玩具代码 ⬇️ ：</p>
 <pre class=" language-javascript"><code class="language-javascript"><span class="token comment" spellcheck="true">// 我不写注释会被打么嘻嘻嘻</span>
 <span class="token keyword">const</span> createMessageStream <span class="token operator">=</span> <span class="token punctuation">(</span>message<span class="token punctuation">,</span> itv<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
-  <span class="token keyword">let</span> currentIndex <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
-  <span class="token keyword">const</span> maxLength <span class="token operator">=</span> message<span class="token punctuation">.</span>length<span class="token punctuation">;</span>
+  <span class="token comment" spellcheck="true">// get next value and done sign</span>
+  <span class="token keyword">const</span> next <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+    <span class="token keyword">let</span> currentIndex <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">const</span> maxLength <span class="token operator">=</span> str<span class="token punctuation">.</span>length<span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>currentIndex <span class="token operator">&lt;</span> maxLength<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">{</span> value<span class="token punctuation">:</span> str<span class="token punctuation">[</span>currentIndex<span class="token operator">++</span><span class="token punctuation">]</span><span class="token punctuation">,</span> done<span class="token punctuation">:</span> <span class="token boolean">false</span> <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        str <span class="token operator">=</span> message <span class="token operator">=</span> itv <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token punctuation">{</span> value<span class="token punctuation">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span> done<span class="token punctuation">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
   <span class="token keyword">return</span> <span class="token punctuation">{</span>
     <span class="token function">pipe</span><span class="token punctuation">(</span><span class="token operator">...</span>pipeFns<span class="token punctuation">)</span> <span class="token punctuation">{</span>
       <span class="token keyword">return</span> <span class="token punctuation">{</span>
         <span class="token function">subscribe</span><span class="token punctuation">(</span><span class="token operator">...</span>subscribedFns<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          <span class="token comment" spellcheck="true">// it's inert, it sit there until `subscribe` to them</span>
           <span class="token keyword">const</span> wrappedFn <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
             <span class="token comment" spellcheck="true">// pipeline to modify the output message</span>
-            <span class="token keyword">let</span> pipedMessage <span class="token operator">=</span> message<span class="token punctuation">[</span>currentIndex<span class="token operator">++</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
-            pipeFns<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>fn <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">(</span>pipedMessage <span class="token operator">=</span> <span class="token function">fn</span><span class="token punctuation">(</span>pipedMessage<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">let</span> <span class="token punctuation">{</span> value<span class="token punctuation">:</span> pipedMessage<span class="token punctuation">,</span> done <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-            <span class="token comment" spellcheck="true">// execute subscribe events with the message</span>
-            subscribedFns<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>fn <span class="token operator">=</span><span class="token operator">></span> <span class="token function">fn</span><span class="token punctuation">(</span>pipedMessage<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>done<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+              pipeFns<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>fn <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">(</span>pipedMessage <span class="token operator">=</span> <span class="token function">fn</span><span class="token punctuation">(</span>pipedMessage<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>currentIndex <span class="token operator">&lt;</span> maxLength<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+              <span class="token comment" spellcheck="true">// execute subscribe events with the message</span>
+              subscribedFns<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>fn <span class="token operator">=</span><span class="token operator">></span> <span class="token function">fn</span><span class="token punctuation">(</span>pipedMessage<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
               <span class="token function">setTimeout</span><span class="token punctuation">(</span>wrappedFn<span class="token punctuation">,</span> itv<span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token punctuation">}</span>
           <span class="token punctuation">}</span><span class="token punctuation">;</span>
